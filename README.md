@@ -1,6 +1,10 @@
 # Sproxxo Fraud Detection MLOps Platform
 
+I've decided to build the platform itself in order to showcase how I would transition from a trained file to a fully deployed and monitored prod service.
+
 The endpoint is live!! try it out: https://sproxxo-127578390616.northamerica-south1.run.app/docs#/
+
+> The swagger ui is really slow due to a really small instance that I used in `GCP` to avoid incurring costs.
 
 or if your prefer, a direct curl would work as well:
 
@@ -58,17 +62,6 @@ You would get something like:
     "overall_risk_score": 0.8
 }
 ```
-
-
-
-### Your Task:
-
-> You need to develop a comprehensive plan and outline the steps required to take this model from its current state (a trained file) to a fully deployed and monitored production service. Given Sproxxo nascent MLOps capabilities, your plan should be both effective and mindful of starting from scratch and have the entire freedom to purpose the best solution you identify. Prepare a presentation to expose the plan to the head of the Analytics team in English in the format you consider more convenient. Make the assumptions you need and specify them to work the case.The presentation should present a clear, high-level diagram of your proposed end-to-end MLOps architecture. This should visually represent the flow from data source (BigQuery for training, transaction systems for real-time inference inputs) to model serving, output integration, and monitoring and address at least but not limited the following points:
-
-
-
-I've decided to build the platform itself in order to showcase how I would transition from a trained file to a fully deployed and monitored prod service.
-
 
 ## 🚀 Features
 
@@ -133,12 +126,12 @@ bcspin/
 - `DELETE /models/{version}` - Delete model version
 
 
-We would need to first empasize the fact that we don't care that much about where the model was trained. Since this is for a real-time inference system, as long as we are able to provide an endpoint an receive `POST` requests, we are fine regardless of the cloud environment. I used a plain fastapi endpoint for the example. We are cloud agnostic and we can adapt it for whatever cloud we need.
-The consideration would have been different if the serving would be for batch inference, since we would need to source the data, it would be easierto stay where we have the data already, since we would avoid a lot of the headaches that the cloud env solves for us (in this case, gcp).  Having said that, if most of the services live in gcp, I would recommend to stay there an maybe deploy the endpoint in a vertex ai endpoint or Cloud Run.
+We would need to first empasize the fact that we don't care that much about where the model was trained. **Since this is for a real-time inference system**, as long as we are able to provide an endpoint an receive `POST` requests, we are fine regardless of the cloud environment. I used a plain fastapi endpoint for the example. We are cloud agnostic and we can adapt it for whatever cloud env we need.
+The consideration would have been different if the serving would be for **batch inference**, since we would need to source the data, it would be easier to stay where we have the data, that would avoid a lot of the headaches that the cloud env solves for us (in this case, gcp).  Having said that, if most of the services live in gcp, I would recommend to stay there an maybe deploy the endpoint in a vertex ai endpoint or Cloud Run.
 
-Regardless the previous considerations, deploying a model is a matter of taking a pkl file making it available to receive requests, regardless of where you host it, that be the same fastapi endpoint in ec2 or cloud run, a dedicated vertex ai endpoint of sagemaker endpoint, etc. For the sake of the example, I'm creating an endpoint in fastapi.
+Regardless the previous considerations, deploying a model is a matter of taking a pkl file and making it available to receive requests, regardless of where you host it (e.g. fastapi endpoint in ec2 or cloud run, a vertex ai endpoint or sagemaker endpoint, etc). For the sake of the example, I'm creating an endpoint in fastapi.
 
-I have experience in the AWS and since you mention that you use GCP, I decided to give it a try. The app is deployed in https://sproxxo-127578390616.northamerica-south1.run.app/. You can checkout the swagger ui here: https://sproxxo-127578390616.northamerica-south1.run.app/docs
+I have experience in the AWS and since you mention that you use GCP, I decided to deploy it there. The app is deployed in https://sproxxo-127578390616.northamerica-south1.run.app/. You can checkout the swagger ui here: https://sproxxo-127578390616.northamerica-south1.run.app/docs
 
 
 ## Model Packaging and Versioning:
@@ -146,31 +139,37 @@ I have experience in the AWS and since you mention that you use GCP, I decided t
 > - [ ] What strategy would you employ for versioning the model and its associated artifacts, especially given that you're establishing these practices?
 > - [ ] How would you ensure reproducibility of the deployed model?
 
-I would highly encourage the usage of some platform for experiment tracking and versioning of the models because that would enable us to pin dependencies and keep track of the versions. For the sake of the example, I used mlflow since I remember you mentioned Databricks and I read that it has good integration. In local development, you can access the UI at `localhost:5000`.
+I would highly encourage the usage of some platform for experiment tracking and versioning of the models because that would enable us to pin dependencies and keep track of the versions. For the sake of the example, I used `mlflow` since I remember you mentioned `Databricks` and I read that it has good integration with `MLFlow`. In local development, you can access the UI at `localhost:5000`.
 
-<img width="1723" height="612" alt="Screenshot from 2025-07-28 01-52-23" src="https://github.com/user-attachments/assets/183f759f-39ff-486c-ad1d-3d9241d43cd1" />
+In the image below, you can see the runs that I did to create some simple `artifacts`. How we have version of the model and the dependencies. We are actually pinning the dependency for the Docker container creation. See the [Docker Compose file](https://github.com/SamuelNavarro/bcspin/blob/1caff6419827ae081af39f07960e541bd3895aee/docker-compose.yml#L14-L15)
+
+<img width="1723" height="800" alt="Screenshot from 2025-07-28 01-52-23" src="https://github.com/user-attachments/assets/183f759f-39ff-486c-ad1d-3d9241d43cd1" />
 
 To ensure reproductibility of the deployed model, I would strongly recommend two things:
 - The versioning of the model
 - Pinning the dependencies for the image creation. That image should also be versioned.
+- Usage of docker containers (TODO: Add in docker hub here)
 
-Most of the times, I have seen that a lot of trouble comes from mismatches between the libraries used in training vs what is used during inference since data scientist are not aware of the problems the different libraries may incurr. They usually just pip install "library" and proceed.
+Most of the times, I have seen that a lot of trouble comes from mismatches between the libraries used in training vs what is used during inference since data scientist are not aware of the problems that different libraries may incurr. They usually just pip install "library" and proceed.
 
 We would need to stablish a clear and robust channel between DS and MLOPs, I have seen that having DS provide a full `lock` file works wonders. That's why I'm using `uv` since it locks the dependencies providing a full `uv.lock` from the `pyproject.toml`.
 
 
-
-
 ## Deployment Strategy:
-> - [ ] Describe your chosen deployment strategy. Justify your choice based on the real-time fraud detection needs of debit and credit transactions.Outline the minimal yet effective infrastructure components required for this deployment within your chosen cloud environment.
-For the deployment strategy, I would highly recommend `shadow deployment`. What I've seen is that it give us enough time to monitor and test the service from two perspectives:
+
+For the deployment strategy, I would highly recommend `shadow deployment`. What I've seen is that it give us enough time to monitor, test and debug the service from two perspectives:
 - MLOPs components: latency, cpu usage, memory utilization, etc.
-- DS components: proper data distribution, correct usage of features, etc.
+- DS components: proper data distribution, correct usage of features, missing values, etc.
+
+The `shadow deployment` would requiere some efforts of implementing the stack in GCP or whatever cloud we decide to stay and if there are enough resource, some coordinatoin between the `backend` team since a lot of times some implementations are way easier to do in other components of the `backend` and just keep invoking the model endpoints.
 
 ## CI/CD Pipeline Design:
 
 I would highly encourage, among other things, what I used in this repo:
-### tox usage
+
+### Tox usage
+
+The envs are declared in the `pyproject.toml` file and you can see that everytime the developer can run formatters, linters, testing, etc. By doing this, we also ensure that the same proceedure is run in Github Actions (see below)
 
 <img width="1182" height="533" alt="Screenshot from 2025-07-27 23-21-45" src="https://github.com/user-attachments/assets/6135d63c-bac7-44aa-8dd9-6b21ad1bd917" />
 
@@ -179,18 +178,20 @@ I would highly encourage, among other things, what I used in this repo:
 
 <img width="570" height="196" alt="Screenshot from 2025-07-28 01-51-37" src="https://github.com/user-attachments/assets/ec3d6b1a-b1a9-4864-ab2b-ea67c59b1549" />
 
-### github actions
+### Github Actions
 
-<img width="1592" height="453" alt="Screenshot from 2025-07-28 02-05-10" src="https://github.com/user-attachments/assets/b4936a09-a134-4208-8328-54014ef922f9" />
-
-<img width="1255" height="703" alt="Screenshot from 2025-07-28 00-20-13" src="https://github.com/user-attachments/assets/0ae66f3a-fc38-4be1-b15e-4383ac09a8ed" />
+I'm intentionally showcasing how we are pass from failing jobs to successful ones since that is usally the flow. We expect to keep failing due to restrict best practices being implemented directly in the repo.
 
 <img width="918" height="544" alt="Screenshot from 2025-07-28 00-07-59" src="https://github.com/user-attachments/assets/1cdf0f1b-232b-4f42-aa00-6c9e959ab655" />
 
+You can see that the same `tox` testing is being executed along some other `jobs` that we implemented. Also, you cna directly download the [`coverate` report from here](https://github.com/SamuelNavarro/bcspin/actions/runs/16575652923) in the Artifacts section.
+
+
 <img width="1882" height="911" alt="Screenshot from 2025-07-28 11-12-26" src="https://github.com/user-attachments/assets/5b89cc59-d468-4a45-bca0-64eda5b91f5f" />
 
-### coverage (low threshold for demostration purposes: 40 %)
-### cookiecutter for ds projects
+We get the benfit of alerts if some builds were not successful.
+
+<img width="1592" height="453" alt="Screenshot from 2025-07-28 02-05-10" src="https://github.com/user-attachments/assets/b4936a09-a134-4208-8328-54014ef922f9" />
 
 
 ### For CD
@@ -199,25 +200,33 @@ I would highly encourage, among other things, what I used in this repo:
 
 
 ### pre-commit with some usefull hooks.
+
 <img width="655" height="247" alt="Screenshot from 2025-07-28 02-00-25" src="https://github.com/user-attachments/assets/c1809006-247f-474f-ada6-392d74c82b30" />
 
+
+
+### Test
+
+- **Unit Tests**: Individual component testing. Under [`test`](https://github.com/SamuelNavarro/bcspin/tree/main/tests)
+- **Integration Tests**: API, e2e tests. Once such example is in the **Run API client integration test** where we actually build the docker container and invoke some of the endpoints multiple times via the [api_client.py](https://github.com/SamuelNavarro/bcspin/blob/main/examples/api_client.py). You can see the jobs [here](https://github.com/SamuelNavarro/bcspin/actions/runs/16575652923/job/46879265284)
 
 <img width="1177" height="702" alt="Screenshot from 2025-07-28 01-49-00" src="https://github.com/user-attachments/assets/0c1a6b03-ec95-49af-9b35-0229960f6e58" />
 <img width="727" height="754" alt="Screenshot from 2025-07-28 00-21-28" src="https://github.com/user-attachments/assets/9cae8593-a069-40f2-915e-ba84b248f2af" />
 
+- **Performance Tests**: Load testing and latency measurement, we could use `Locust`. Not implemented in the repo.
+- **Security Tests**: Vulnerability scanning and penetration testing. These are implemented, see in [pyproject security section](https://github.com/SamuelNavarro/bcspin/blob/2d14ee846462df421ea06168f70a96a1c308aa19/pyproject.toml#L131-L134)
 
-- **Unit Tests**: Individual component testing. Under [`test`](https://github.com/SamuelNavarro/bcspin/tree/main/tests)
-- **Integration Tests**: API and database integration
-- **Performance Tests**: Load testing and latency measurement, we could use Locust. Not implemented in the repo.
-- **Security Tests**: Vulnerability scanning and penetration testing. These are implemented, checkout the [pyproject security section](https://github.com/SamuelNavarro/bcspin/blob/2d14ee846462df421ea06168f70a96a1c308aa19/pyproject.toml#L131-L134)
+#### Test Coverage
 
-### Test Coverage
+For now, we have a really low threshold for the demo (40 %) but usually this value is supposed to stay high.
 
 <img width="802" height="611" alt="Screenshot from 2025-07-28 11-12-55" src="https://github.com/user-attachments/assets/bbce1f77-e16b-4467-b184-76e2cd8d5ba6" />
+
+The coverage allow us to see precisely which parts of the code are not being tested.
+
 <img width="1138" height="946" alt="Screenshot from 2025-07-28 11-15-07" src="https://github.com/user-attachments/assets/41d9f4b7-4e1c-4c55-917e-430fa686ec8d" />
 
 
-- As integration test we have the sproxxo-api-client
 
 
 
@@ -255,17 +264,60 @@ We have the layer of pydantic validations but we do have business validations. O
 
 
 
+## 🛠️ Local Development
 
+### Quick Start
 
+1. **Install dependencies**:
+   ```bash
+   make install-dev  # Install with development dependencies
+   # or
+   make install-all  # Install all optional dependencies (dev + mlops)
+   ```
 
+2. **Train a model**:
+   ```bash
+   make train        # Train with 10,000 samples
+   # or
+   make train-quick  # Quick training with 1,000 samples
+   ```
 
+3. **Run with Docker**:
+   ```bash
+   make docker-sproxxo-api  # Build and run API in Docker
+   ```
 
+4. **Run the API locally**:
+   ```bash
+   make run-api-examples      # Run code under `examples/api_client.py`
+   make run-api               # Run Fast API
+   ```
 
+### Development Workflow
 
+**Code Quality & Testing**:
+```bash
+make tox           # Run all tests and checks
+make tox-test      # Run tests only
+make tox-lint      # Run linting only
+make tox-format    # Fix code formatting
+make check-all     # Run lint + test + security checks
+```
 
+**Useful Commands**:
+```bash
+make help          # Show all available commands
+make list-models   # List available trained models
+make check-health  # Check if API is running
+make clean         # Clean build artifacts
+```
 
-
-
+**Docker Development**:
+```bash
+make docker-compose-up    # Start all services
+make docker-compose-down  # Stop all services
+make logs                 # View application logs
+```
 
 
 ## 📚 Documentation
