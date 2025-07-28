@@ -198,10 +198,6 @@ logs/
 # Kubernetes
 k8s/secrets/
 
-# Monitoring
-monitoring/grafana/data/
-
-
 # Secrets
 .secrets.baseline
 .env.local

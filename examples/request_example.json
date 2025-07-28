@@ -1,0 +1,15 @@
+{
+  "transaction_id": "tx_123456",
+  "features": {
+    "transaction_amount": 150.75,
+    "merchant_category": "retail",
+    "time_of_day": 14,
+    "location_lat": 40.7128,
+    "location_lon": -74.006,
+    "average_spend": 85.3,
+    "transactions_last_hour": 2,
+    "card_age_days": 365,
+    "is_foreign_transaction": false,
+    "merchant_risk_score": 0.25
+  }
+}

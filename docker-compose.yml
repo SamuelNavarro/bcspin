@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Main API service
+  sproxxo-api:
+    build:
+      context: .
+      target: development
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+      - MODEL_PATH=/app/models/fraud_detection_model_latest.pkl
+      - MODEL_VERSION=v4.0.0
+      - DEBUG=true
+    volumes:
+      - .:/app
+      - ./models:/app/models
+    networks:
+      - sproxxo-network
+    command: uv run uvicorn sproxxo.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # MLflow for experiment tracking
+  mlflow:
+    image: python:3.11-slim
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://localhost:5000
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+      - .:/app
+    working_dir: /app
+    command: >
+      bash -c "pip install mlflow &&
+               mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db"
+    networks:
+      - sproxxo-network
+
+  # Jupyter for development and experimentation
+  # We don't use this, but it a good placeholder
+  # to showcase that DS can use Jupyter for development
+  jupyter:
+    build:
+      context: .
+      target: development
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    volumes:
+      - .:/app
+      - ./notebooks:/app/notebooks
+    working_dir: /app
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''
+    networks:
+      - sproxxo-network
+
+networks:
+  sproxxo-network:
+    driver: bridge
