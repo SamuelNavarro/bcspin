@@ -75,6 +75,7 @@ Given that, the app is deployed in https://sproxxo-127578390616.northamerica-sou
 - [ ] How would you ensure reproducibility of the deployed model?
 - [ ]
 
+Right now I have the models locally in an `artifacts` folder. We should store the pkl files in a Cloud Storage.
 <img width="1672" height="1000" alt="Screenshot from 2025-07-28 01-54-55" src="https://github.com/user-attachments/assets/ddabf0af-ae50-4a36-affb-7ccefc66bb5c" />
 <img width="1672" height="1000" alt="Screenshot from 2025-07-28 01-54-06" src="https://github.com/user-attachments/assets/f41ecb89-04b1-47a8-9178-8fde665f759b" />
 
