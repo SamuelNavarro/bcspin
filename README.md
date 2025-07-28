@@ -1,6 +1,36 @@
 # Sproxxo Fraud Detection MLOps Platform
 
+The endpoint is live!! try it out: https://sproxxo-127578390616.northamerica-south1.run.app/docs#/
 
+or if your prefer, a direct curl would work as well:
+
+```shell
+curl -X 'POST' \
+  'https://sproxxo-127578390616.northamerica-south1.run.app/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "transaction_id": "string",
+  "features": {
+    "transaction_amount": 15,
+    "merchant_category": "retail",
+    "time_of_day": 0,
+    "location_lat": 0,
+    "location_lon": 0,
+    "average_spend": 0,
+    "transactions_last_hour": 0,
+    "card_age_days": 0,
+    "is_foreign_transaction": true,
+    "merchant_risk_score": 0
+  }
+}'
+```
+
+You would get something like:
+
+```bash
+{"transaction_id":"string","fraud_probability":0.2732921242713928,"is_fraud":false,"confidence_score":0.5267078757286072,"model_version":"20250727_233143","prediction_timestamp":"2025-07-28T10:43:52.166375","feature_importance":{"transaction_amount_scaled":0.0365694984793663,"merchant_category_encoded":0.03143179044127464,"time_of_day_scaled":0.04668349400162697,"location_lat_scaled":0.03449851647019386,"location_lon_scaled":0.032825253903865814,"average_spend_scaled":0.03265126049518585,"transactions_last_hour_scaled":0.0373387448489666,"card_age_days_scaled":0.032754309475421906,"is_foreign_transaction":0.6809464693069458,"merchant_risk_score":0.03430062159895897},"is_valid":true,"validation_errors":{},"risk_indicators":{"foreign_transaction":0.8,"late_night":0.6,"new_card":1.0},"overall_risk_score":0.8}
+```
 
 ### Brain dump
 
@@ -55,6 +85,17 @@ For CD, I really like how jenkins manage deployments when merging to dev, qa and
 
 
 - Talk about locust
+
+
+
+
+
+
+
+
+
+
+
 
 
 ### Your Task:
@@ -118,6 +159,15 @@ Good CI/CD design always imply a set of tools with correct usage. I would highly
 #### Integration Strategy:
 - [ ] How would the real-time transaction processing system integrate with your deployed model for inference requests and receiving predictions? What protocols or mechanisms would you use?
 
+<img width="1020" height="425" alt="Screenshot from 2025-07-28 04-44-08" src="https://github.com/user-attachments/assets/cd5ba82b-2d9b-4b00-b8c5-96c30fddfee9" />
+<img width="1608" height="746" alt="Screenshot from 2025-07-28 04-45-52" src="https://github.com/user-attachments/assets/7b40de44-e1e0-4d98-bce1-7226b52e7f9b" />
+<img width="1719" height="548" alt="Screenshot from 2025-07-28 04-48-49" src="https://github.com/user-attachments/assets/2b25da9b-262b-4861-95eb-96724916fb98" />
+<img width="1711" height="770" alt="Screenshot from 2025-07-28 04-54-36" src="https://github.com/user-attachments/assets/ddf8f3d4-abe5-41e1-acd1-addadcf58644" />
+<img width="1711" height="770" alt="Screenshot from 2025-07-28 04-54-46" src="https://github.com/user-attachments/assets/eeacd98a-8a42-4d5b-8c8d-23e3d783f6b6" />
+<img width="1882" height="911" alt="Screenshot from 2025-07-28 11-12-26" src="https://github.com/user-attachments/assets/5b89cc59-d468-4a45-bca0-64eda5b91f5f" />
+<img width="802" height="611" alt="Screenshot from 2025-07-28 11-12-55" src="https://github.com/user-attachments/assets/bbce1f77-e16b-4467-b184-76e2cd8d5ba6" />
+<img width="1138" height="946" alt="Screenshot from 2025-07-28 11-15-07" src="https://github.com/user-attachments/assets/41d9f4b7-4e1c-4c55-917e-430fa686ec8d" />
+<img width="1713" height="1053" alt="Screenshot from 2025-07-28 11-48-25" src="https://github.com/user-attachments/assets/6e28f839-b5a3-423d-877d-11a60e9604c4" />
 
 
 
