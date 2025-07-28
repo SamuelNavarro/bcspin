@@ -224,7 +224,7 @@ The envs are declared in the `pyproject.toml` file and you can see that everytim
 
 <img width="570" height="196" alt="Screenshot from 2025-07-28 01-51-37" src="https://github.com/user-attachments/assets/ec3d6b1a-b1a9-4864-ab2b-ea67c59b1549" />
 
-### Github Actions
+### [Github Actions](https://github.com/SamuelNavarro/bcspin/actions)
 
 I'm intentionally showcasing how we are pass from failing jobs to successful ones since that is usally the flow. We expect to keep failing due to restrict best practices being implemented directly in the repo.
 
