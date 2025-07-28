@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     # API settings
     host: str = Field(default="0.0.0.0", description="API host")
-    port: int = Field(default=8000, description="API port", env="PORT")
+    port: int = Field(default=8000, description="API port")
     workers: int = Field(default=1, description="Number of workers")
 
     # Model settings
