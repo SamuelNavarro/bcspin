@@ -2,7 +2,7 @@
 
 
 
-### Mine
+### Brain dump
 
 - I need to talk about stablishing a channel for dependencies sharing and pinning them between MLOPs and DS, since is the biggest source of problems.
 
@@ -29,13 +29,12 @@ otherwise, the .venv will mess up the docker env synce we are mounting the volum
 - coverage (low threshold for demostration purposes: 40 %)
 - cookiecutter for ds projects
 
+Branch protection for qa and main ofc.
 
 As integration test we have the sproxxo-api-client
 
+For CD, I really like how jenkins manage deployments when merging to dev, qa and main. That is usually managed by a dedicated devops team, but I really like how we can see and debug the builds there.
 
-
-
-Here are concise bullet points for your README:
 
 ## **Transaction Validation & Risk Assessment**
 
@@ -45,7 +44,6 @@ Here are concise bullet points for your README:
 • **Intelligent Monitoring**: Automatic logging of invalid transactions and high-risk activities (score >0.7) for improved fraud detection oversight and system monitoring
 • **Dual-Layer Protection**: Pydantic ensures data type safety while custom validators catch business rule violations, creating comprehensive input validation for the fraud detection pipeline
 
-What's ACTUALLY Being Used:
 🔄 Only Pydantic validation in TransactionFeatures model (basic type checking)
 🔄 No business rule validation in the API endpoints
 🔄 No risk assessment before fraud prediction
@@ -57,11 +55,6 @@ What's ACTUALLY Being Used:
 ### Your Task:
 
 You need to develop a comprehensive plan and outline the steps required to take this model from its current state (a trained file) to a fully deployed and monitored production service. Given Sproxxo nascent MLOps capabilities, your plan should be both effective and mindful of starting from scratch and have the entire freedom to purpose the best solution you identify. Prepare a presentation to expose the plan to the head of the Analytics team in English in the format you consider more convenient. Make the assumptions you need and specify them to work the case.The presentation should present a clear, high-level diagram of your proposed end-to-end MLOps architecture. This should visually represent the flow from data source (BigQuery for training, transaction systems for real-time inference inputs) to model serving, output integration, and monitoring and address at least but not limited the following points:
-
-
-
-
-
 
 
 
@@ -84,12 +77,6 @@ Good CI/CD design always imply a set of tools with correct usage. I would highly
 
 - [ ] Sketch out a CI/CD pipeline for this model. Present a diagram of your proposed CI/CD pipeline detailing each stage.
 - [ ] What automated tests would you implement at each stage?
-
-
-
-
-
-
 
 #### Monitoring and Alerting:
 - [ ] Need to implement the monitoring part
@@ -134,16 +121,6 @@ A comprehensive MLOps platform for real-time fraud detection in financial transa
 - **Production Ready**: Docker containers, CI/CD pipelines, and security best practices
 - **Modern Tooling**: uv for dependency management, pre-commit hooks, and comprehensive testing
 
-## 🏗️ Architecture
-
-### Cloud Provider Recommendation: **Google Cloud Platform (GCP)**
-
-**Justification:**
-- **BigQuery Integration**: Existing data in BigQuery for seamless integration
-- **Vertex AI**: Native ML model serving with auto-scaling
-- **Cloud Run**: Serverless containers for cost-effective scaling
-- **Cloud Monitoring**: Ready for GCP Cloud Monitoring integration
-- **Cost Efficiency**: Pay-per-use model ideal for startup scaling
 
 ## 📁 Project Structure
 
@@ -197,30 +174,6 @@ bcspin/
 - Docker and Docker Compose
 - uv (Python package manager)
 
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/sproxxo/sproxxo-mlops.git
-   cd sproxxo-mlops
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   uv sync
-   ```
-
-3. **Setup pre-commit hooks:**
-   ```bash
-   pre-commit install
-   ```
-
-4. **Start the development environment:**
-   ```bash
-   docker-compose up -d
-   ```
-
-### Development
 
 
 ## 📊 API Endpoints
@@ -250,17 +203,7 @@ MODEL_PATH=models/fraud_detection_model.pkl
 MLFLOW_TRACKING_URI=http://localhost:5000
 ```
 
-## 📈 Monitoring & Observability
-
-### Metrics Collected
-
-- **Request Metrics**: Rate, duration, status codes
-- **Prediction Metrics**: Fraud rate, confidence scores, model performance
-- **System Metrics**: CPU, memory, active connections
-- **Business Metrics**: Transaction volume, fraud detection rate
-
 ### Dashboards
-
 - **MLflow**: Experiment tracking and model versioning and registry
 
 ## 🧪 Testing Strategy
@@ -290,16 +233,6 @@ List here the html
 ## 📚 Documentation
 
 - [API Documentation](http://localhost:8000/docs)
-- [Architecture Overview](docs/architecture.md)
-- [Deployment Guide](docs/deployment.md)
-- [Monitoring Guide](docs/monitoring.md)
-
-### Development Guidelines
-
-- Follow PEP 8 style guidelines
-- Write comprehensive tests
-- Update documentation
-- Use conventional commit messages
 
 ## 📄 License
 
@@ -307,4 +240,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-- **Issues**: [GitHub Issues](https://github.com/sproxxo/sproxxo-mlops/issues)
+- **Issues**: [GitHub Issues](https://github.com/SmuelNavarro/bcspin/issues)

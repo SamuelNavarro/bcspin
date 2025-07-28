@@ -9,7 +9,7 @@ description = "Sproxxo Fraud Detection MLOps Platform"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Sproxxo Team", email = "mlops@sproxxo.com"}
+    {name = "Sproxxo Team", email = "samuel.nm10@gmail.com"}
 ]
 requires-python = ">=3.9"
 dependencies = [
@@ -62,9 +62,9 @@ mlops = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sproxxo/sproxxo-mlops"
-Repository = "https://github.com/sproxxo/sproxxo-mlops"
-"Bug Tracker" = "https://github.com/sproxxo/sproxxo-mlops/issues"
+Homepage = "https://github.com/SamuelNavarro/bcspin"
+Repository = "https://github.com/SamuelNavarro/bcspin"
+"Bug Tracker" = "https://github.com/SamuelNavarro/bcspin/issues"
 
 [project.scripts]
 sproxxo-train = "sproxxo.training.train:main"
