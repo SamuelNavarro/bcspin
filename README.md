@@ -65,11 +65,30 @@ You would get something like:
 
 ## 🚀 Features
 
+### Core ML Capabilities
 - **Real-time Fraud Detection**: FastAPI-based API with sub-100ms response times
-- **Model Management**: Version control and model lifecycle management
-- **Comprehensive Monitoring**: Structured logging and MLflow experiment tracking
-- **Production Ready**: Docker containers, CI/CD pipelines, and security best practices
-- **Modern Tooling**: uv for dependency management, pre-commit hooks (linters, formatters, etc),comprehensive testing with tox.
+- **Model Management**: Version control and lifecycle management with MLflow integration
+- **Business Rule Validation**: Dual-layer protection with Pydantic + custom business logic validators
+- **Risk Assessment**: Automatic calculation of risk indicators (foreign transactions, late-night activity, new cards)
+- **Feature Importance**: Real-time explainability with prediction confidence scores
+
+### Production-Ready Infrastructure
+- **Containerized Deployment**: Docker containers with pinned dependencies for reproducibility
+- **Cloud Agnostic**: Deployable on AWS, GCP, or any container platform
+- **Health Monitoring**: Built-in health checks and structured logging with risk indicator tracking
+- **API Documentation**: Auto-generated OpenAPI/Swagger documentation
+
+### Development & Testing
+- **Comprehensive Testing**: Unit, integration, and security tests with 40%+ coverage
+- **CI/CD Pipeline**: GitHub Actions with automated testing, linting, and deployment
+- **Code Quality**: Pre-commit hooks, tox environments, and automated formatting
+- **Security Scanning**: Bandit security analysis and vulnerability detection
+
+### MLOps Best Practices
+- **Experiment Tracking**: MLflow integration for model versioning and artifact management
+- **Dependency Management**: UV lock files for reproducible environments
+- **Shadow Deployment Ready**: Architecture designed for safe production rollouts
+- **Model Artifacts**: Versioned pickle files with metadata and performance metrics
 
 
 ## 📁 Project Structure
@@ -125,19 +144,17 @@ bcspin/
 - `GET /models/{version}` - Get model version information
 - `DELETE /models/{version}` - Delete model version
 
+## Answering the Business Case
 
 We would need to first empasize the fact that we don't care that much about where the model was trained. **Since this is for a real-time inference system**, as long as we are able to provide an endpoint an receive `POST` requests, we are fine regardless of the cloud environment. I used a plain fastapi endpoint for the example. We are cloud agnostic and we can adapt it for whatever cloud env we need.
 The consideration would have been different if the serving would be for **batch inference**, since we would need to source the data, it would be easier to stay where we have the data, that would avoid a lot of the headaches that the cloud env solves for us (in this case, gcp).  Having said that, if most of the services live in gcp, I would recommend to stay there an maybe deploy the endpoint in a vertex ai endpoint or Cloud Run.
 
-Regardless the previous considerations, deploying a model is a matter of taking a pkl file and making it available to receive requests, regardless of where you host it (e.g. fastapi endpoint in ec2 or cloud run, a vertex ai endpoint or sagemaker endpoint, etc). For the sake of the example, I'm creating an endpoint in fastapi.
+Regardless the previous considerations, deploying a model is a matter of taking a pkl file and making it available to receive requests, (via fastapi endpoint in ec2 or cloud run, a vertex ai endpoint or sagemaker endpoint, etc). For the sake of the example, I'm creating an endpoint in fastapi.
 
 I have experience in the AWS and since you mention that you use GCP, I decided to deploy it there. The app is deployed in https://sproxxo-127578390616.northamerica-south1.run.app/. You can checkout the swagger ui here: https://sproxxo-127578390616.northamerica-south1.run.app/docs
 
 
 ## Model Packaging and Versioning:
-> - [ ] How would you package this model for deployment?
-> - [ ] What strategy would you employ for versioning the model and its associated artifacts, especially given that you're establishing these practices?
-> - [ ] How would you ensure reproducibility of the deployed model?
 
 I would highly encourage the usage of some platform for experiment tracking and versioning of the models because that would enable us to pin dependencies and keep track of the versions. For the sake of the example, I used `mlflow` since I remember you mentioned `Databricks` and I read that it has good integration with `MLFlow`. In local development, you can access the UI at `localhost:5000`.
 
@@ -155,17 +172,46 @@ Most of the times, I have seen that a lot of trouble comes from mismatches betwe
 We would need to stablish a clear and robust channel between DS and MLOPs, I have seen that having DS provide a full `lock` file works wonders. That's why I'm using `uv` since it locks the dependencies providing a full `uv.lock` from the `pyproject.toml`.
 
 
+### Proper Documentation of endpoints
+
+FastAPI comes with a builtit Swagger UI
+
+<img width="1713" height="1053" alt="Screenshot from 2025-07-28 11-48-25" src="https://github.com/user-attachments/assets/6e28f839-b5a3-423d-877d-11a60e9604c4" />
+
 ## Deployment Strategy:
 
 For the deployment strategy, I would highly recommend `shadow deployment`. What I've seen is that it give us enough time to monitor, test and debug the service from two perspectives:
 - MLOPs components: latency, cpu usage, memory utilization, etc.
 - DS components: proper data distribution, correct usage of features, missing values, etc.
 
-The `shadow deployment` would requiere some efforts of implementing the stack in GCP or whatever cloud we decide to stay and if there are enough resource, some coordinatoin between the `backend` team since a lot of times some implementations are way easier to do in other components of the `backend` and just keep invoking the model endpoints.
+The `shadow deployment` would requiere some efforts of implementing the stack in GCP or whatever cloud we decide to stay and if there are enough resources, some coordinatoin between the `backend` team since a lot of times some implementations are way easier to do in other components of the `backend` and just keep invoking the model endpoints.
 
 ## CI/CD Pipeline Design:
 
 I would highly encourage, among other things, what I used in this repo:
+
+### Test
+
+- **Unit Tests**: Individual component testing. Under [`test`](https://github.com/SamuelNavarro/bcspin/tree/main/tests)
+- **Integration Tests**: API, e2e tests. Once such example is in the **Run API client integration test** where we actually build the docker container and invoke some of the endpoints multiple times via the [api_client.py](https://github.com/SamuelNavarro/bcspin/blob/main/examples/api_client.py). You can see the jobs [here](https://github.com/SamuelNavarro/bcspin/actions/runs/16575652923/job/46879265284)
+
+<img width="1177" height="702" alt="Screenshot from 2025-07-28 01-49-00" src="https://github.com/user-attachments/assets/0c1a6b03-ec95-49af-9b35-0229960f6e58" />
+<img width="727" height="754" alt="Screenshot from 2025-07-28 00-21-28" src="https://github.com/user-attachments/assets/9cae8593-a069-40f2-915e-ba84b248f2af" />
+
+- **Performance Tests**: Load testing and latency measurement, we could use `Locust`. Not implemented in the repo.
+- **Security Tests**: Vulnerability scanning and penetration testing. These are implemented, see in [pyproject security section](https://github.com/SamuelNavarro/bcspin/blob/2d14ee846462df421ea06168f70a96a1c308aa19/pyproject.toml#L131-L134)
+
+#### Test Coverage
+
+For now, we have a really low threshold for the demo (40 %) but usually this value is supposed to stay high.
+
+<img width="802" height="611" alt="Screenshot from 2025-07-28 11-12-55" src="https://github.com/user-attachments/assets/bbce1f77-e16b-4467-b184-76e2cd8d5ba6" />
+
+The coverage allow us to see precisely which parts of the code are not being tested.
+
+<img width="1138" height="946" alt="Screenshot from 2025-07-28 11-15-07" src="https://github.com/user-attachments/assets/41d9f4b7-4e1c-4c55-917e-430fa686ec8d" />
+
+
 
 ### Tox usage
 
@@ -195,39 +241,13 @@ We get the benfit of alerts if some builds were not successful.
 
 
 ### For CD
-- I really like how jenkins manage deployments when merging to dev, qa and main. That is usually managed by a dedicated devops team, but I really like how we can see and debug the builds there.
-- Branch protection for qa and main ofc.
+- I really like how jenkins manage deployments when merging to `dev`, `qa` and `main`. That is usually managed by a dedicated devops team, but I really like how we can see and debug the builds there.
+- Encourage proper branch protection for qa and main, since merging would trigger deployments.
 
 
-### pre-commit with some usefull hooks.
+### Pre-commit with some usefull hooks
 
 <img width="655" height="247" alt="Screenshot from 2025-07-28 02-00-25" src="https://github.com/user-attachments/assets/c1809006-247f-474f-ada6-392d74c82b30" />
-
-
-
-### Test
-
-- **Unit Tests**: Individual component testing. Under [`test`](https://github.com/SamuelNavarro/bcspin/tree/main/tests)
-- **Integration Tests**: API, e2e tests. Once such example is in the **Run API client integration test** where we actually build the docker container and invoke some of the endpoints multiple times via the [api_client.py](https://github.com/SamuelNavarro/bcspin/blob/main/examples/api_client.py). You can see the jobs [here](https://github.com/SamuelNavarro/bcspin/actions/runs/16575652923/job/46879265284)
-
-<img width="1177" height="702" alt="Screenshot from 2025-07-28 01-49-00" src="https://github.com/user-attachments/assets/0c1a6b03-ec95-49af-9b35-0229960f6e58" />
-<img width="727" height="754" alt="Screenshot from 2025-07-28 00-21-28" src="https://github.com/user-attachments/assets/9cae8593-a069-40f2-915e-ba84b248f2af" />
-
-- **Performance Tests**: Load testing and latency measurement, we could use `Locust`. Not implemented in the repo.
-- **Security Tests**: Vulnerability scanning and penetration testing. These are implemented, see in [pyproject security section](https://github.com/SamuelNavarro/bcspin/blob/2d14ee846462df421ea06168f70a96a1c308aa19/pyproject.toml#L131-L134)
-
-#### Test Coverage
-
-For now, we have a really low threshold for the demo (40 %) but usually this value is supposed to stay high.
-
-<img width="802" height="611" alt="Screenshot from 2025-07-28 11-12-55" src="https://github.com/user-attachments/assets/bbce1f77-e16b-4467-b184-76e2cd8d5ba6" />
-
-The coverage allow us to see precisely which parts of the code are not being tested.
-
-<img width="1138" height="946" alt="Screenshot from 2025-07-28 11-15-07" src="https://github.com/user-attachments/assets/41d9f4b7-4e1c-4c55-917e-430fa686ec8d" />
-
-
-
 
 
 
@@ -242,25 +262,23 @@ I usually like the usage of `graphana` for the MLOPs monitoring since we can eas
 
 For data related monitoring, it's good practice to always dump the data in buckets or cloud storage, so we can set up pipelines that read from them and source them into our dashboards. That's why the payload in our response has the `features_importance` key.
 
+A good thing of deploying things in the cloud is that we get to see metrics for the instance right away:
+
+<img width="1711" height="770" alt="Screenshot from 2025-07-28 04-54-36" src="https://github.com/user-attachments/assets/ddf8f3d4-abe5-41e1-acd1-addadcf58644" />
+
+
+<img width="1711" height="770" alt="Screenshot from 2025-07-28 04-54-46" src="https://github.com/user-attachments/assets/eeacd98a-8a42-4d5b-8c8d-23e3d783f6b6" />
 
 ## Integration Strategy:
 
 We have the layer of pydantic validations but we do have business validations. One thing is to validate schemas or some system expectations, but we can stablish some business logic as validation. As you can see, the code has `Transaction Validation` and `Risk Assessment` based on the actual request.
 
-<img width="1719" height="548" alt="Screenshot from 2025-07-28 04-48-49" src="https://github.com/user-attachments/assets/2b25da9b-262b-4861-95eb-96724916fb98" />
-<img width="1711" height="770" alt="Screenshot from 2025-07-28 04-54-36" src="https://github.com/user-attachments/assets/ddf8f3d4-abe5-41e1-acd1-addadcf58644" />
-<img width="1711" height="770" alt="Screenshot from 2025-07-28 04-54-46" src="https://github.com/user-attachments/assets/eeacd98a-8a42-4d5b-8c8d-23e3d783f6b6" />
-<img width="1713" height="1053" alt="Screenshot from 2025-07-28 11-48-25" src="https://github.com/user-attachments/assets/6e28f839-b5a3-423d-877d-11a60e9604c4" />
-
 
 • **Business Rule Validation**: Beyond Pydantic's type checking in `TransactionFeatures`, custom validators enforce business logic (amount limits, valid merchant categories, coordinate ranges, reasonable time values)
-• **Automatic Risk Scoring**: Real-time calculation of risk indicators including high amounts (>$500), foreign transactions, late-night activity (midnight-5am), new cards (<30 days), and suspicious transaction patterns
+• **Automatic Risk Scoring**: Real-time calculation of risk indicators including high amounts, foreign transactions, late-night activity, new cards, and suspicious transaction patterns
 • **Enhanced API Responses**: Fraud detection endpoints return validation status, specific error details, risk indicator breakdown, and overall risk scores (0-1) alongside ML predictions
-• **Intelligent Monitoring**: Automatic logging of invalid transactions and high-risk activities (score >0.7) for improved fraud detection oversight and system monitoring
+• **Intelligent Monitoring**: Automatic logging of invalid transactions and high-risk activities for improved fraud detection oversight and system monitoring
 • **Dual-Layer Protection**: Pydantic ensures data type safety while custom validators catch business rule violations, creating comprehensive input validation for the fraud detection pipeline
-
-
-
 
 
 
