@@ -173,8 +173,7 @@ models/*.h5
 models/*.pb
 
 # Artifacts from training (model files)
-artifacts/
-*.pkl
+mlartifacts/
 *.joblib
 *.pth
 *.onnx

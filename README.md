@@ -32,7 +32,7 @@ otherwise, the .venv will mess up the docker env synce we are mounting the volum
 - github actions
 - coverage (low threshold for demostration purposes: 40 %)
 - cookiecutter for ds projects
-- 
+-
 
 Branch protection for qa and main ofc.
 
@@ -66,12 +66,16 @@ You need to develop a comprehensive plan and outline the steps required to take 
 #### Cloud Provider Recommendation & Justification:
 - [ ] Propose a specific cloud provider to the Sproxxo business team. Justify your choice based on factors relevant to a startup with limited existing infrastructure and a small data science team, as well as the existing data location in BigQuery and the nature of Sproxxo's financial products (debit card, digital app, credit products).
 
+Given that, the app is deployed in https://sproxxo-127578390616.northamerica-south1.run.app/. Checkout the docs!!: https://sproxxo-127578390616.northamerica-south1.run.app/docs
+
+
 #### Model Packaging and Versioning:
 - [ ] How would you package this model for deployment?
 - [ ] What strategy would you employ for versioning the model and its associated artifacts, especially given that you're establishing these practices?
 - [ ] How would you ensure reproducibility of the deployed model?
 - [ ]
 
+Right now I have the models locally in an `artifacts` folder. We should store the pkl files in a Cloud Storage.
 <img width="1672" height="1000" alt="Screenshot from 2025-07-28 01-54-55" src="https://github.com/user-attachments/assets/ddabf0af-ae50-4a36-affb-7ccefc66bb5c" />
 <img width="1672" height="1000" alt="Screenshot from 2025-07-28 01-54-06" src="https://github.com/user-attachments/assets/f41ecb89-04b1-47a8-9178-8fde665f759b" />
 
