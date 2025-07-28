@@ -100,7 +100,7 @@ jobs:
 
       - name: Build and start services
         run: |
-          docker-compose up -d --build sproxxo-api
+          docker compose up -d --build sproxxo-api
           sleep 15
 
       - name: Test API health endpoint
@@ -117,8 +117,8 @@ jobs:
 
       - name: Show service logs
         if: failure()
-        run: docker-compose logs sproxxo-api
+        run: docker compose logs sproxxo-api
 
       - name: Cleanup
         if: always()
-        run: docker-compose down
+        run: docker compose down
