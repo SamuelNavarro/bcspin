@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     # Application settings
     app_name: str = Field(default="Sproxxo Fraud Detection API", description="Application name")
     environment: str = Field(default="development", description="Environment (development, staging, production)")
-    debug: bool = Field(default=False, description="Debug mode")
+    debug: bool = Field(default=True, description="Debug mode")
     log_level: str = Field(default="INFO", description="Logging level")
 
     # API settings
