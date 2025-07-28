@@ -30,6 +30,7 @@ otherwise, the .venv will mess up the docker env synce we are mounting the volum
 - cookiecutter for ds projects
 
 
+As integration test we have the sproxxo-api-client
 
 
 

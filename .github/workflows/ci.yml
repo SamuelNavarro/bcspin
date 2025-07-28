@@ -98,15 +98,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image
-        run: docker build -t sproxxo:test .
-
-      - name: Test Docker image
+      - name: Build and start services
         run: |
-          docker run --rm -d --name sproxxo-test -p 8000:8000 sproxxo:test
-          sleep 10
+          docker-compose up -d --build sproxxo-api
+          sleep 15
+
+      - name: Test API health endpoint
+        run: |
           curl -f http://localhost:8000/health || exit 1
-          docker stop sproxxo-test
+
+      - name: Install dependencies for API client
+        run: uv sync --frozen
+
+      - name: Run API client integration test
+        run: |
+          echo "🧪 Running comprehensive API integration test..."
+          uv run sproxxo-api-client
+
+      - name: Show service logs
+        if: failure()
+        run: docker-compose logs sproxxo-api
+
+      - name: Cleanup
+        if: always()
+        run: docker-compose down
