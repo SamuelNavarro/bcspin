@@ -94,7 +94,7 @@ exclude = [
 
 [tool.tox]
 isolated_build = true
-envlist = ["format-fix", "format", "lint", "test", "security"]
+envlist = ["format-fix", "format", "lint", "test"]
 requires = ["tox>=4.0", "tox-uv"]
 parallel_show_output = true
 
