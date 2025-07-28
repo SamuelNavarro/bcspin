@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     # API settings
     host: str = Field(default="0.0.0.0", description="API host")
-    port: int = Field(default=8000, description="API port")
+    port: int = Field(default=8000, description="API port", env="PORT")
     workers: int = Field(default=1, description="Number of workers")
 
     # Model settings
@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     prediction_threshold: float = Field(default=0.8, description="Fraud prediction threshold")
 
     # MLflow settings
-    mlflow_tracking_uri: str = Field(default="http://localhost:5000", description="MLflow tracking URI")
+    mlflow_tracking_uri: str = Field(default="file:///tmp/mlruns", description="MLflow tracking URI")
     mlflow_experiment_name: str = Field(default="fraud-detection", description="MLflow experiment name")
 
     # Security settings
