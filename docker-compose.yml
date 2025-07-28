@@ -15,7 +15,10 @@ services:
       - MODEL_VERSION=v4.0.0
       - DEBUG=true
     volumes:
-      - .:/app
+      - ./sproxxo:/app/sproxxo
+      - ./examples:/app/examples
+      - ./pyproject.toml:/app/pyproject.toml
+      - ./README.md:/app/README.md
       - ./models:/app/models
     networks:
       - sproxxo-network
