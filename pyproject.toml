@@ -99,7 +99,7 @@ requires = ["tox>=4.0", "tox-uv"]
 parallel_show_output = true
 
 [tool.tox.testenv]
-allowlist_externals = ["uv", "ruff", "mypy", "pytest", "bandit"]
+allowlist_externals = ["uv", "ruff", "mypy", "pytest"]
 basepython = "python3.11"
 deps = [
     "pytest",
