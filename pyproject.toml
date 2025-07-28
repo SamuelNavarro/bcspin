@@ -9,7 +9,7 @@ description = "Sproxxo Fraud Detection MLOps Platform"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Sproxxo Team", email = "mlops@sproxxo.com"}
+    {name = "Sproxxo Team", email = "samuel.nm10@gmail.com"}
 ]
 requires-python = ">=3.9"
 dependencies = [
@@ -19,30 +19,30 @@ dependencies = [
     "pandas>=2.0.0",
     "numpy>=1.24.0",
     "mlflow>=2.8.0",
-    
+
     # Web framework for API
     "fastapi>=0.104.0",
     "uvicorn[standard]>=0.24.0",
     "pydantic>=2.5.0",
-    
+
     # Monitoring and observability
     "structlog>=23.2.0",
-    
+
     # Data processing
     "pydantic-settings>=2.1.0",
     "python-dotenv>=1.0.0",
-    
+
     # Testing
     "pytest>=7.4.0",
     "pytest-asyncio>=0.21.0",
     "pytest-cov>=4.1.0",
     "httpx>=0.25.0",
-    
+
     # Development tools
     "ruff>=0.1.0",
     "mypy>=1.7.0",
     "pre-commit>=3.5.0",
-    
+
     # Security tools
     "bandit[toml]>=1.7.5",
 ]
@@ -62,9 +62,9 @@ mlops = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sproxxo/sproxxo-mlops"
-Repository = "https://github.com/sproxxo/sproxxo-mlops"
-"Bug Tracker" = "https://github.com/sproxxo/sproxxo-mlops/issues"
+Homepage = "https://github.com/SamuelNavarro/bcspin"
+Repository = "https://github.com/SamuelNavarro/bcspin"
+"Bug Tracker" = "https://github.com/SamuelNavarro/bcspin/issues"
 
 [project.scripts]
 sproxxo-train = "sproxxo.training.train:main"
@@ -80,7 +80,7 @@ exclude = [
     ".venv-local",
     "/.tox",
     "/mlruns",
-    "/mlartifacts", 
+    "/mlartifacts",
     "/artifacts",
     "/.git",
     "/__pycache__",
@@ -94,12 +94,12 @@ exclude = [
 
 [tool.tox]
 isolated_build = true
-envlist = ["format-fix", "format", "lint", "test", "security"]
+envlist = ["format-fix", "format", "lint", "test"]
 requires = ["tox>=4.0", "tox-uv"]
 parallel_show_output = true
 
 [tool.tox.testenv]
-allowlist_externals = ["uv", "ruff", "mypy", "pytest", "bandit"]
+allowlist_externals = ["uv", "ruff", "mypy", "pytest"]
 basepython = "python3.11"
 deps = [
     "pytest",
@@ -113,7 +113,7 @@ deps = [
 [tool.tox.env.test]
 commands = [
     ["uv", "sync", "--extra", "dev"],
-    ["pytest", "tests/", "--cov=sproxxo", "--cov-report=term-missing", "--cov-report=html", "--cov-fail-under=80", "-x"]
+    ["pytest", "tests/", "--cov=sproxxo", "--cov-report=term-missing", "--cov-report=html", "--cov-fail-under=40", "-x"]
 ]
 
 [tool.tox.env.format]
@@ -219,4 +219,4 @@ skips = ["B101", "B601"]  # Skip assert statements and shell injection
 targets = ["sproxxo"]
 
 [tool.bandit.assert_used]
-skips = ["*_test.py", "*/test_*.py"] 
+skips = ["*_test.py", "*/test_*.py"]

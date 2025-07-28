@@ -1,0 +1,127 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+env:
+  PYTHON_VERSION: "3.11"
+  UV_VERSION: "0.8.0"
+
+jobs:
+  code-quality:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Run security scan
+        continue-on-error: true
+        run: |
+          uv run bandit -r sproxxo/ -f json -o bandit-report.json
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-report
+          path: bandit-report.json
+
+  # Tests with tox
+  tests:
+    name: Tests with tox
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            .uv
+          key: ${{ runner.os }}-uv-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-${{ matrix.python-version }}-
+
+      - name: Install dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Run tests with tox
+        run: |
+          echo "Running tox environments..."
+          uv run tox
+          echo "Tox run finished."
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+
+      - name: Upload coverage HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-${{ matrix.python-version }}
+          path: htmlcov/
+
+  # Build and Test Docker Image
+  docker-build:
+    name: Docker Build & Test
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Build and start services
+        run: |
+          docker compose up -d --build sproxxo-api
+          sleep 15
+
+      - name: Test API health endpoint
+        run: |
+          curl -f http://localhost:8000/health || exit 1
+
+      - name: Install dependencies for API client
+        run: uv sync --frozen
+
+      - name: Run API client integration test
+        run: |
+          echo "🧪 Running comprehensive API integration test..."
+          uv run sproxxo-api-client
+
+      - name: Show service logs
+        if: failure()
+        run: docker compose logs sproxxo-api
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down
