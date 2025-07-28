@@ -26,7 +26,7 @@ otherwise, the .venv will mess up the docker env synce we are mounting the volum
 - pre-commit with some usefull hooks.
 - tox usage
 - github actions
-- coverage
+- coverage (low threshold for demostration purposes: 40 %)
 - cookiecutter for ds projects
 
 
