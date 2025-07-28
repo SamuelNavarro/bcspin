@@ -160,12 +160,19 @@ I would highly encourage the usage of some platform for experiment tracking and 
 
 In the image below, you can see the runs that I did to create some simple `artifacts`. How we have version of the model and the dependencies. We are actually pinning the dependency for the Docker container creation. See the [Docker Compose file](https://github.com/SamuelNavarro/bcspin/blob/1caff6419827ae081af39f07960e541bd3895aee/docker-compose.yml#L14-L15)
 
-<img width="1723" height="800" alt="Screenshot from 2025-07-28 01-52-23" src="https://github.com/user-attachments/assets/183f759f-39ff-486c-ad1d-3d9241d43cd1" />
+
+<img width="1819" height="658" alt="image" src="https://github.com/user-attachments/assets/fe57ba88-35d3-4ea6-81f3-985cc4a62a01" />
+
 
 To ensure reproductibility of the deployed model, I would strongly recommend two things:
 - The versioning of the model
 - Pinning the dependencies for the image creation. That image should also be versioned.
-- Usage of docker containers (TODO: Add in docker hub here)
+- Usage of docker containers.
+
+All the versions of the docker images that I pushed for `gcp` deployment are versioned as well:
+
+<img width="945" height="721" alt="image" src="https://github.com/user-attachments/assets/17680196-0b79-47ce-9c22-459d03d6e610" />
+
 
 Most of the times, I have seen that a lot of trouble comes from mismatches between the libraries used in training vs what is used during inference since data scientist are not aware of the problems that different libraries may incurr. They usually just pip install "library" and proceed.
 
