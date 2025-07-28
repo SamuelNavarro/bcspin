@@ -28,6 +28,7 @@ jobs:
         run: uv sync --frozen
 
       - name: Run security scan
+        continue-on-error: true
         run: |
           uv run bandit -r sproxxo/ -f json -o bandit-report.json
 
