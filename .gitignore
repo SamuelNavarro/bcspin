@@ -228,4 +228,3 @@ safety-report.json
 
 # uv
 .uv/
-uv.lock
