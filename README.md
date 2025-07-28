@@ -19,15 +19,20 @@ To ensure reproductibility of the deployed model, I would strongly recommend two
 If you plan to run it locally, please sync it like:
 export UV_PROJECT_ENVIRONMENT=.venv-local && uv sync
 otherwise, the .venv will mess up the docker env synce we are mounting the volume.
+<img width="1592" height="453" alt="Screenshot from 2025-07-28 02-05-10" src="https://github.com/user-attachments/assets/b4936a09-a134-4208-8328-54014ef922f9" />
 
 
 - We have the layer of pydantic validations but we do have business validations.
 
 - pre-commit with some usefull hooks.
+<img width="655" height="247" alt="Screenshot from 2025-07-28 02-00-25" src="https://github.com/user-attachments/assets/c1809006-247f-474f-ada6-392d74c82b30" />
+
+
 - tox usage
 - github actions
 - coverage (low threshold for demostration purposes: 40 %)
 - cookiecutter for ds projects
+- 
 
 Branch protection for qa and main ofc.
 
@@ -65,6 +70,16 @@ You need to develop a comprehensive plan and outline the steps required to take 
 - [ ] How would you package this model for deployment?
 - [ ] What strategy would you employ for versioning the model and its associated artifacts, especially given that you're establishing these practices?
 - [ ] How would you ensure reproducibility of the deployed model?
+- [ ]
+
+<img width="1672" height="1000" alt="Screenshot from 2025-07-28 01-54-55" src="https://github.com/user-attachments/assets/ddabf0af-ae50-4a36-affb-7ccefc66bb5c" />
+<img width="1672" height="1000" alt="Screenshot from 2025-07-28 01-54-06" src="https://github.com/user-attachments/assets/f41ecb89-04b1-47a8-9178-8fde665f759b" />
+
+<img width="1723" height="612" alt="Screenshot from 2025-07-28 01-52-23" src="https://github.com/user-attachments/assets/183f759f-39ff-486c-ad1d-3d9241d43cd1" />
+<img width="641" height="130" alt="Screenshot from 2025-07-27 23-41-34" src="https://github.com/user-attachments/assets/57001063-2637-47aa-8987-88787d36b3c3" />
+
+
+
 
 #### Deployment Strategy:
 - [ ] Describe your chosen deployment strategy. Justify your choice based on the real-time fraud detection needs of debit and credit transactions.Outline the minimal yet effective infrastructure components required for this deployment within your chosen cloud environment.
@@ -73,10 +88,22 @@ You need to develop a comprehensive plan and outline the steps required to take 
 
 Good CI/CD design always imply a set of tools with correct usage. I would highly encourage what is set in this repo:
 - tox for testing
+<img width="570" height="196" alt="Screenshot from 2025-07-28 01-51-37" src="https://github.com/user-attachments/assets/ec3d6b1a-b1a9-4864-ab2b-ea67c59b1549" />
 
 
 - [ ] Sketch out a CI/CD pipeline for this model. Present a diagram of your proposed CI/CD pipeline detailing each stage.
 - [ ] What automated tests would you implement at each stage?
+<img width="1182" height="533" alt="Screenshot from 2025-07-27 23-21-45" src="https://github.com/user-attachments/assets/6135d63c-bac7-44aa-8dd9-6b21ad1bd917" />
+<img width="557" height="166" alt="Screenshot from 2025-07-27 23-02-02" src="https://github.com/user-attachments/assets/f115e8ec-d4d7-47de-9841-918ee079ce4e" />
+
+<img width="1177" height="702" alt="Screenshot from 2025-07-28 01-49-00" src="https://github.com/user-attachments/assets/0c1a6b03-ec95-49af-9b35-0229960f6e58" />
+<img width="727" height="754" alt="Screenshot from 2025-07-28 00-21-28" src="https://github.com/user-attachments/assets/9cae8593-a069-40f2-915e-ba84b248f2af" />
+<img width="1255" height="703" alt="Screenshot from 2025-07-28 00-20-13" src="https://github.com/user-attachments/assets/0ae66f3a-fc38-4be1-b15e-4383ac09a8ed" />
+<img width="918" height="544" alt="Screenshot from 2025-07-28 00-07-59" src="https://github.com/user-attachments/assets/1cdf0f1b-232b-4f42-aa00-6c9e959ab655" />
+
+
+
+
 
 #### Monitoring and Alerting:
 - [ ] Need to implement the monitoring part
@@ -240,4 +267,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-- **Issues**: [GitHub Issues](https://github.com/SmuelNavarro/bcspin/issues)
+- **Issues**: [GitHub Issues](https://github.com/SamuelNavarro/bcspin/issues)
